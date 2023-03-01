@@ -4,7 +4,6 @@ import { Link } from "react-router-dom"
 const Header = () => {
   return (
     <header className="header">
-        <div className="logo">
             <div className="logo">
                 <Link to="/">Support Desk</Link>
             </div>
@@ -20,7 +19,6 @@ const Header = () => {
                     </Link>
                 </li>
             </ul>
-        </div>
     </header>
   )
 }
