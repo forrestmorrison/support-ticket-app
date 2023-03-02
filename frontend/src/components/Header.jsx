@@ -8,22 +8,34 @@ const Header = () => {
     const navigate = useNavigate()
     const { user } = useSelector((state) => state.auth)
 
+    const onLogout = () => {
+        dispatch(logout())
+        dispatch(reset())
+        navigate("/")
+    }
+
     return (
         <header className="header">
                 <div className="logo">
                     <Link to="/">Support Desk</Link>
                 </div>
                 <ul>
-                    <li>
-                        <Link to="/login">
-                            <FaSignInAlt /> Login
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/register">
-                            <FaUser /> Register
-                        </Link>
-                    </li>
+                { user ? (
+                    <li><button className="btn" onClick={onLogout}><FaSignOutAlt /> Logout</button></li>
+                ) : (
+                    <>
+                        <li>
+                            <Link to="/login">
+                                <FaSignInAlt /> Login
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/register">
+                                <FaUser /> Register
+                            </Link>
+                        </li>
+                    </>
+                ) }
                 </ul>
         </header>
     )
