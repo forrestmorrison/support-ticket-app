@@ -25,6 +25,7 @@ const Register = () => {
             toast.error(message)
         }
 
+        // redirect when logged in
         if (isSuccess || user) {
             navigate("/")
         }
