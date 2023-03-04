@@ -1,4 +1,6 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { FaPlus } from "react-icons/fa"
+import Modal from "react-modal"
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
@@ -8,9 +10,26 @@ import BackButton from "../components/BackButton"
 import NoteItem from "../components/NoteItem"
 import Spinner from "../components/Spinner"
 
-const Ticket = () => {
-    const { ticket, isLoading, isSuccess, isError, message } = useSelector((state) => state.tickets)
+const customStyles = {
+    content: {
+      width: "600px",
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      position: "relative",
+    },
+}
 
+Modal.setAppElement("#root")
+
+const Ticket = () => {
+    const [modalIsOpen, setModalIsOpen] = useState(false)
+    const [noteText, setNoteText] = useState("")
+
+    const { ticket, isLoading, isSuccess, isError, message } = useSelector((state) => state.tickets)
     const { notes, isLoading: notesIsLoading } = useSelector((state) => state.notes)
 
     const dispatch = useDispatch()
@@ -33,6 +52,15 @@ const Ticket = () => {
         toast.success("Ticket Closed")
         navigate("/tickets")
     }
+
+    const onNoteSubmit = (e) => {
+        e.preventDefault()
+        console.log("submit")
+        closeModal()
+    }
+
+    const openModal = () => setModalIsOpen(true)
+    const closeModal = () => setModalIsOpen(false)
 
     if(isLoading || notesIsLoading) {
         return <Spinner />
@@ -62,11 +90,40 @@ const Ticket = () => {
                 <h2>Notes</h2>
             </header>
 
+            {ticket.status !== "closed" && (
+                <button onClick={openModal} className="btn"><FaPlus /> Add Note</button>
+            )}
+
+            <Modal 
+                isOpen={modalIsOpen} 
+                onRequestClose={closeModal} 
+                style={customStyles}
+                contentLabel="add note"
+            >
+                <h2>Add Note</h2>
+                <button className="btn-close" onClick={closeModal}>X</button>
+                <form onSubmit={onNoteSubmit}>
+                    <div className="form-group">
+                        <textarea 
+                            name="noteText"
+                            id="noteText"
+                            className="form-control"
+                            placeholder="note text"
+                            value={noteText}
+                            onChange={(e) => setNoteText(e.target.value)}
+                        ></textarea>
+                    </div>
+                    <div className="form-group">
+                        <button className="btn" type="submit">Submit</button>
+                    </div>
+                </form>
+            </Modal>
+
             {notes.map((note) => (
                 <NoteItem key={note._id} note={note} />
             ))}
 
-            { ticket.status !== "closed" && (
+            {ticket.status !== "closed" && (
                 <button onClick={onTicketClose} className="btn btn-block btn-danger">
                     Close Ticket
                 </button>
