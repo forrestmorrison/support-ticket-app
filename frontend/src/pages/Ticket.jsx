@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify"
 import { closeTicket, getTicket, reset } from "../features/tickets/ticketSlice"
-import { getNotes, reset as notesReset } from "../features/notes/noteSlice"
+import { getNotes, createNote, reset as notesReset } from "../features/notes/noteSlice"
 import BackButton from "../components/BackButton"
 import NoteItem from "../components/NoteItem"
 import Spinner from "../components/Spinner"
@@ -55,7 +55,7 @@ const Ticket = () => {
 
     const onNoteSubmit = (e) => {
         e.preventDefault()
-        console.log("submit")
+        dispatch(createNote({ noteText, ticketId }))
         closeModal()
     }
 
